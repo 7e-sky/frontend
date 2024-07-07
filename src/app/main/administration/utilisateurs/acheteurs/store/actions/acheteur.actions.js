@@ -24,6 +24,8 @@ export const UPDATE_ACHETEUR = '[ACHETEURS ADMIN APP] UPDATE ACHETEUR';
 export const REQUEST_UPDATE_ACHETEUR = '[ACHETEURS ADMIN APP] REQUEST UPDATE_ACHETEUR';
 export const GET_SECTEURS = '[ACHETEURS ADMIN APP] GET_SECTEURS';
 
+
+
 export const REQUEST_ADD_VILLE = '[ACHETEURS ADMIN APP] REQUEST_ADD_VILLE';
 export const SAVE_ADD_VILLE = '[ACHETEURS ADMIN APP] SAVE_ADD_VILLE';
 export const SAVE_ERROR_ADD_VILLE = '[ACHETEURS ADMIN APP] SAVE_ERROR_ADD_VILLE';
@@ -58,6 +60,7 @@ export function cleanUpAddedVille() {
         type: CLEAN_UP_VILLE,
     });
 }
+
 
 
 export function getAcheteur(id_acheteur) {

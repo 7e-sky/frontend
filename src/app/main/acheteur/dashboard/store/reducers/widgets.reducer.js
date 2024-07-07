@@ -7,6 +7,9 @@ const initialState = {
     loading: false,
     loadingCharts: false,
     loadingBudgets: false,
+    loadingTeams: false,
+    teamPotentiels: false,
+    loadingTeamPotentiels: false,
 };
 
 const widgetsReducer = function (state = initialState, action) {
@@ -47,6 +50,30 @@ const widgetsReducer = function (state = initialState, action) {
                 budgets: action.payload,
                 loadingBudgets: false
             };
+            case Actions.REQUEST_POTENTIEL:
+                return {
+                    ...state,
+                    teams: [],
+                    loadingTeams: true
+                };
+            case Actions.GET_POTENTIEL:
+                return {
+                    ...state,
+                    teams: action.payload,
+                    loadingTeams: false
+                };
+            case Actions.REQUEST_TEAM_POTENTIEL:
+                return {
+                    ...state,
+                    teamPotentiels: [],
+                    loadingTeamPotentiels: true
+                };
+            case Actions.GET_TEAM_POTENTIEL:
+                return {
+                    ...state,
+                    teamPotentiels: action.payload,
+                    loadingTeamPotentiels: false
+                };
         default:
             return state;
     }

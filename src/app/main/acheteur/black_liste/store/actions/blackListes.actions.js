@@ -17,7 +17,26 @@ export const SAVE_DATA = '[BLACK_LISTES APP]  SAVE_DATA';
 export const REMOVE_BLACK_LISTE = '[BLACK_LISTES APP] REMOVE BLACK_LISTE';
 export const REQUEST_SAVE = '[BLACK_LISTES APP] REQUEST_SAVE';
 
+
+
+
+ export const ADDITIONAL_FIELDS = {
+    ICE: 'ice',
+    SIRET: 'siret',
+    FournisseurEx: 'fournisseurEx',
+    EMAIL: 'email',
+    PAYS: 'pays',
+    //team_id: 10,
+    VILLE: 'ville'
+}; 
+
+
+
+
 /*export const GET_FOURNISSEURS = '[BLACK_LISTES APP] GET FOURNISSEURS';
+
+
+
 
 
 export function getFournisseurs(societe)
@@ -33,6 +52,8 @@ export function getFournisseurs(societe)
         });
 }
 */
+
+
 export function getBlackListes(id_acheteur) {
     const request = agent.get(`/api/acheteurs/${id_acheteur}/blacklistes`);
 
@@ -78,15 +99,92 @@ export function closeEditBlackListesDialog() {
     }
 }
 
+/* export function addBlackListe(newBlackListe, id_acheteur) {
+    return (dispatch, getState) => {
+        const { teams } = getState(); // Assurez-vous que le nom du réducteur est correct
+        const team_id = teams?.team_id;
+
+        if (!team_id) {
+            dispatch(showMessage({
+                message: 'La valeur de team_id ne doit pas être vide',
+                anchorOrigin: {
+                    vertical: 'top',
+                    horizontal: 'right'
+                },
+                variant: 'error'
+            }));
+            return Promise.reject('La valeur de team_id ne doit pas être vide');
+        }
+
+        dispatch({
+            type: REQUEST_SAVE
+        });
+
+        const blackListeData = {
+            ...newBlackListe,
+            team: team_id,
+            id_acheteur: id_acheteur,
+            [ADDITIONAL_FIELDS.ICE]: newBlackListe.ice,
+            [ADDITIONAL_FIELDS.SIRET]: newBlackListe.siret,
+            [ADDITIONAL_FIELDS.FournisseurEx]: newBlackListe.fournisseurEx,
+            [ADDITIONAL_FIELDS.EMAIL]: newBlackListe.email,
+            [ADDITIONAL_FIELDS.PAYS]: newBlackListe.pays,
+            [ADDITIONAL_FIELDS.VILLE]: newBlackListe.ville
+        };
+
+        console.log('blackListeData:', blackListeData);
+
+        const request = agent.post('/api/black_listes', blackListeData);
+        const mediateurRequest = agent.post('/api/mediateurs', blackListeData);
+
+        return request.then((response) =>
+            Promise.all([
+                mediateurRequest,
+                dispatch({
+                    type: SAVE_DATA
+                }),
+                dispatch(showMessage({
+                    message: 'Blacklisté avec succès!',
+                    anchorOrigin: {
+                        vertical: 'top',
+                        horizontal: 'right'
+                    },
+                    variant: 'success'
+                })),
+                dispatch(closeNewBlackListesDialog())
+            ]).then(() => dispatch(getBlackListes(id_acheteur)))
+        ).catch((error) => {
+            dispatch({
+                type: SAVE_ERROR,
+            });
+            dispatch(showMessage({
+                message: _.map(FuseUtils.parseApiErrors(error), (value, key) => `${key}: ${value}`),
+                autoHideDuration: 6000,
+                anchorOrigin: {
+                    vertical: 'top',
+                    horizontal: 'right'
+                },
+                variant: 'error'
+            }));
+            dispatch(closeNewBlackListesDialog());
+        });
+    };
+} */
+
 export function addBlackListe(newBlackListe, id_acheteur) {
 
     return (dispatch) => {
         dispatch({
             type: REQUEST_SAVE
         });
+        
         const request = agent.post('/api/black_listes', newBlackListe);
+        //const request = agent.post('/api/Mediateur', newMediateur);
+        const mediateurRequest = agent.post('/api/mediateurs', newBlackListe);
+
         return request.then((response) =>
             Promise.all([
+                mediateurRequest,
                 dispatch({
                     type: SAVE_DATA
                 }),
@@ -120,7 +218,7 @@ export function addBlackListe(newBlackListe, id_acheteur) {
 
         });
     };
-}
+}  
 
 export function updateBlackListe(BlackListe, id_acheteur) {
     return (dispatch) => {
@@ -129,9 +227,13 @@ export function updateBlackListe(BlackListe, id_acheteur) {
             type: REQUEST_SAVE
         });
         const request = agent.put(BlackListe['@id'], BlackListe);
+        //const mediateurRequest = agent.put(BlackListe['@id'], BlackListe); // Mise à jour dans la table "mediateur"
+        //const mediateurId = BlackListe['blackliste_id'];
+        //const mediateurRequest = agent.put('/api/mediateurs/' + mediateurId);
 
         return request.then((response) =>
             Promise.all([
+                
                 dispatch({
                     type: SAVE_DATA
                 }),
@@ -174,6 +276,7 @@ export function removeBlackListe(BlackListe, state, id_acheteur) {
 
 
         const request = agent.put(BlackListe['@id'], Update);
+        const mediateurRequest = agent.put(BlackListe['@id'], Update); // Mise à jour dans la table "mediateur"
 
         return request.then((response) =>
             Promise.all([

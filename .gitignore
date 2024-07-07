@@ -26,4 +26,4 @@ yarn-debug.log*
 yarn-error.log*
 src/agent.js
 src/@fuse/FuseUtils.js
-src/agent.js
+/src/agent.js

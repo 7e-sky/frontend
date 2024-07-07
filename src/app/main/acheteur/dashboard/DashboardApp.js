@@ -11,6 +11,7 @@ import Widget3 from './widgets/Widget3';
 import Widget4 from './widgets/Widget4';
 import Widget5 from './widgets/Widget5';
 import Widget6 from './widgets/Widget6';
+import Widget12 from './widgets/Widget12';
 import ContentLoader from 'react-content-loader';
 import { Helmet } from "react-helmet";
 

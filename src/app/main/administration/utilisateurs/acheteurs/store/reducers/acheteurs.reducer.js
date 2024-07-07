@@ -6,6 +6,14 @@ const initialState = {
     pageCount: null,
     loading: false,
     searchText: '',
+    acheteursDialog: {
+        type: 'new',
+        props: {
+            open: false
+        },
+        data: null
+    },
+
     parametres: {
         page: 1,
         societe: '',
@@ -37,6 +45,19 @@ const acheteursReducer = function (state = initialState, action) {
                     loading: false
                 };
             }
+            case Actions.OPEN_NEW_ACHETEURS_DIALOG:
+                {
+                    return {
+                        ...state,
+                        acheteursDialog: {
+                            type: 'new',
+                            props: {
+                                open: true
+                            },
+                            data: null
+                        }
+                    };
+                }
         case Actions.SET_ACHETEURS_SEARCH_TEXT:
             {
                 return {

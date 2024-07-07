@@ -12,6 +12,7 @@ import ScrollToTop from './ScrollToTop';
 import { create } from 'jss';
 import { StylesProvider, jssPreset, createGenerateClassName } from '@material-ui/styles';
 import CookieConsent, { Cookies } from "react-cookie-consent";
+//import routesConfig from './fuse-configs/routesConfig'; // Assurez-vous que le chemin est correct
 
 const jss = create({
     ...jssPreset(),

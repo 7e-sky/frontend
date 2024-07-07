@@ -17,6 +17,7 @@ import {
   ListItemText,
   FormControlLabel,
   Radio,
+  Dialog,
   DialogTitle,
   DialogContent,
   DialogContentText,
@@ -239,12 +240,15 @@ function Demande(props) {
   const [interval, setInterval] = useState(null);
 
   const formRef = useRef(null);
+  
   const { form, handleChange, setForm } = useForm(null);
 
   const classes = useStyles(props);
   const [tabValue, setTabValue] = useState(0);
   const params = props.match.params;
   const { demandeId } = params;
+  const [openSaveDialog, setOpenSaveDialog] = useState(false);
+  const [openSendDialog, setOpenSendDialog] = useState(false);
 
   useEffect(() => {
     function updateDemandeState() {
@@ -479,6 +483,32 @@ function Demande(props) {
     dispatch(Actions.cleanUp());
   }
 
+ /*  const handleButtonClick = (buttonType) => {
+    if (buttonType === 'save') {
+      alert('Sauvegarder avant diffuser');
+    } else if (buttonType === 'send') {
+      alert('Envoyer');
+    }
+    // Appelez la fonction handleSubmit ici
+    handleSubmit(false);
+  }; */
+
+  const handleSave = () => {
+    handleSubmit(false);
+    setOpenSaveDialog(false);
+  };
+
+  const handleSend = () => {
+    handleSubmit(false);
+    setOpenSendDialog(false);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+    }
+  };
+
   function handleSubmit(vider = false) {
     const params = props.match.params;
     const { demandeId } = params;
@@ -561,7 +591,7 @@ function Demande(props) {
                     </div>
                   </div>
                   <div>
-                    {moment(demande.data.dateExpiration) >= moment() &&
+                   {/*  {moment(demande.data.dateExpiration) >= moment() &&
                       demande.data.statut && (
                         <GreenButton
                           className="mr-4"
@@ -697,7 +727,7 @@ function Demande(props) {
                             />
                           )}
                         </RedButton>
-                      )}
+                      )} */}
                     <Button
                       className="whitespace-no-wrap"
                       variant="contained"
@@ -835,7 +865,7 @@ function Demande(props) {
                         ""
                       )}
                       <Grid container spacing={3} className="mb-8">
-                        <Grid item xs={12} sm={8}>
+                        {/* <Grid item xs={12} sm={8}>
                           <Typography variant="caption">
                             - Soumettez votre demande c'est gratuit et sans
                             engagement.
@@ -861,7 +891,7 @@ function Demande(props) {
                             <span className="text-red font-600">*</span> Champs
                             obligatoires.
                           </Typography>
-                        </Grid>
+                        </Grid> */}
                         {form.statut === 1 && (
                           <Grid item xs={12}>
                             <Typography
@@ -879,7 +909,7 @@ function Demande(props) {
                         )}
                       </Grid>
                       <Grid container spacing={3}>
-                        <Grid item xs={12} sm={8}>
+                        <Grid item xs={12} sm={7}>
                           <TextFieldFormsy
                             className="mb-24"
                             label="Designation"
@@ -900,7 +930,9 @@ function Demande(props) {
                             required
                             fullWidth
                           />
+                          
                         </Grid>
+                        
                         <Grid item xs={12} sm={4}>
                           <TextFieldFormsy
                             className="mb-24"
@@ -923,6 +955,7 @@ function Demande(props) {
                           />
                         </Grid>
                       </Grid>
+                      
 
                       <Grid container spacing={3}>
                         <Grid item xs={12} sm={6}>
@@ -994,7 +1027,7 @@ function Demande(props) {
                           required
                           inputProps={{
                             classes,
-                            label: "Produits",
+                            label: "Produits Services à Recherchez ",
                             placeholder: "Produit (ex: Projecteur)",
                             value: searchCategories.searchText,
                             variant: "outlined",
@@ -1091,27 +1124,31 @@ function Demande(props) {
                             />
                           ))}
                       </div>
-
-                      <TextFieldFormsy
-                        className="mb-16 mt-16  w-full"
-                        type="text"
-                        name="description"
-                        value={form.description}
-                        onChange={handleChange}
-                        label="Description"
-                        autoComplete="description"
-                        validations={{
-                          minLength: 10,
-                        }}
-                        validationErrors={{
-                          minLength: "La longueur minimale de caractère est 10",
-                        }}
-                        required
-                        variant="outlined"
-                        multiline
-                        rows="4"
-                      />
-
+                      <Grid container spacing={3}>
+                      <Grid item xs={12} sm={12}>
+                                  <TextFieldFormsy
+                                    className="mb-16 mt-16  w-full"
+                                    type="text"
+                                    name="description"
+                                    value={form.description}
+                                    onChange={handleChange}
+                                    //onKeyDown={handleKeyDown}
+                                    label="Description"
+                                    autoFocus
+                                    validations={{
+                                      minLength: 10,
+                                    }}
+                                    validationErrors={{
+                                      minLength: "La longueur minimale de caractère est 10",
+                                    }}
+                                    required
+                                    variant="outlined"
+                                    multiline
+                                    rows="4"
+                                  />
+                    </Grid>
+                    </Grid>
+                     
                       <Grid container spacing={3} className="flex items-center">
                         <Grid item xs={12} sm={4}>
                           <RadioGroupFormsy
@@ -1181,31 +1218,130 @@ function Demande(props) {
                           </Tooltip>
                         </Grid>
                       </Grid>
+                      <Grid container spacing={3} className="mb-8">
+                        <Grid item xs={12} sm={8}>
+                          <Typography variant="caption">
+                            - Soumettez votre demande c'est gratuit et sans
+                            engagement.
+                            <br />
+                            - Détaillez la demande, vous recevrez de meilleures
+                            offres.
+                            <br />
+                            - Attention seules les demandes sérieuses (pas de
+                            projets étudiants) seront validées.
+                            <br />
+                          </Typography>
+                        </Grid>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={4}
+                          className="justify-end text-right"
+                        >
+                          <Typography
+                            variant="caption"
+                            className="font-extrabold"
+                          >
+                            <span className="text-red font-600">*</span> Champs
+                            obligatoires.
+                          </Typography>
+                        </Grid> 
+                        </Grid>
                       <Grid container spacing={3} className="mt-4">
                         <Grid item xs={12} sm={10}>
-                          <Button
-                            className="whitespace-no-wrap"
-                            variant="contained"
-                            color="secondary"
-                            disabled={
-                              !isFormValid ||
-                              demande.loading ||
-                              (!categories.length && !suggestions.length) ||
-                              demande.data.statut === 3
-                            }
-                            onClick={() => handleSubmit(false)}
-                          >
-                            <span className="hidden sm:flex">Sauvegarder</span>
-                            <span className="flex sm:hidden">
-                              <Icon>save</Icon>
-                            </span>
-                            {demande.loading && (
-                              <CircularProgress
-                                size={24}
-                                className={classes.buttonProgress}
-                              />
-                            )}
-                          </Button>
+                        <Button
+        className="whitespace-no-wrap"
+        variant="contained"
+        color="secondary"
+        disabled={
+          !isFormValid ||
+          demande.loading ||
+          (!categories.length && !suggestions.length) ||
+          demande.data.statut === 3
+        }
+        onClick={() => setOpenSaveDialog(true)}
+      >
+        <span className="hidden sm:flex">Sauvegarder avant diffuser</span>
+        <span className="flex sm:hidden">
+          <Icon>save</Icon>
+        </span>
+        {demande.loading && (
+          <CircularProgress
+            size={24}
+            className={classes.buttonProgress}
+          />
+        )}
+      </Button>
+      <Button
+        style={{ backgroundColor: 'orangered', marginLeft: '20px' }}
+        className="whitespace-no-wrap"
+        variant="contained"
+        color="secondary"
+        disabled={
+          !isFormValid ||
+          demande.loading ||
+          (!categories.length && !suggestions.length) ||
+          demande.data.statut === 3
+        }
+        onClick={() => setOpenSendDialog(true)}
+      >
+        <span className="hidden sm:flex">Envoyer</span>
+        <span className="flex sm:hidden">
+          <Icon>send</Icon>
+        </span>
+        {demande.loading && (
+          <CircularProgress
+            size={24}
+            className={classes.buttonProgress}
+          />
+        )}
+      </Button>
+
+      {/* Dialog for Save */}
+      <Dialog
+        open={openSaveDialog}
+        onClose={() => setOpenSaveDialog(false)}
+        aria-labelledby="save-dialog-title"
+        aria-describedby="save-dialog-description"
+      >
+        <DialogTitle id="save-dialog-title">Sauvegarder</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="save-dialog-description">
+            Voulez-vous vraiment sauvegarder cet enregistrement avant de diffuser ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenSaveDialog(false)} color="primary">
+            Non
+          </Button>
+          <Button onClick={handleSave} color="primary" autoFocus>
+            Oui
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Dialog for Send */}
+      <Dialog
+        open={openSendDialog}
+        onClose={() => setOpenSendDialog(false)}
+        aria-labelledby="send-dialog-title"
+        aria-describedby="send-dialog-description"
+      >
+        <DialogTitle id="send-dialog-title">Envoyer</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="send-dialog-description">
+            Voulez-vous vraiment envoyer cet enregistrement ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenSendDialog(false)} color="primary">
+            Non
+          </Button>
+          <Button onClick={handleSend} color="primary" autoFocus>
+            Oui
+          </Button>
+        </DialogActions>
+      </Dialog>
                           {demandeId === "new" && (
                             <Button
                               className="ml-8"

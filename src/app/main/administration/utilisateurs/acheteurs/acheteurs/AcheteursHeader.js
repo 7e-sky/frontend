@@ -1,5 +1,6 @@
 import React from 'react';
-import { Paper, Input, Icon, Typography } from '@material-ui/core';
+//import { Paper, Input, Icon, Typography } from '@material-ui/core';
+import { Icon, Input, Paper, Typography, Button } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { FuseAnimate } from '@fuse';
 import { useDispatch, useSelector } from 'react-redux';
@@ -49,7 +50,12 @@ function AcheteursHeader(props) {
                 </ThemeProvider>
 
             </div>
-
+            <FuseAnimate animation="transition.slideRightIn" delay={300}>
+                <Button onClick={ev => dispatch(Actions.openNewAcheteursDialog())} className="whitespace-no-wrap" variant="contained">
+                    <span className="hidden sm:flex">Ajouter un Acheteur</span>
+                    <span className="flex sm:hidden">New</span>
+                </Button>
+            </FuseAnimate>                   
         </div>
     );
 }

@@ -9,10 +9,12 @@ import { pagesConfigs } from 'app/main/pages/pagesConfigs';
 import { administrateurConfigs } from '../main/administration/administrateurConfigs';
 import { RegisterPageConfig } from '../main/inscription/RegisterPageConfig';
 import { acheteurConfigs } from '../main/acheteur/acheteurConfigs';
+import { mediateurConfigs } from '../main/mediateur/mediateurConfigs';
 import { fournisseurConfigs } from '../main/fournisseur/fournisseurConfigs';
 import { PortailConfig } from '../main/portail/PortailConfig';
 import { DashboardConfigs } from '../main/dashboard/DashboardConfigs';
 
+//import AcheteursPage from '../main/acheteur/AcheteursPage';
 function setAdminAuth(configs) {
     return configs.map(config => _.merge({}, config, { auth: authRoles.admin }))
 }
@@ -21,6 +23,7 @@ const routeConfigs = [
         ...administrateurConfigs,
     ]),
     ...acheteurConfigs,
+    ...mediateurConfigs,
     ...fournisseurConfigs,
     ...pagesConfigs,
     ...RegisterPageConfig,

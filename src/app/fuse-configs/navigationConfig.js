@@ -376,6 +376,18 @@ const navigationConfig = [
 
   /** Fin Admin Navigation */
 
+  /** MEDIATEUR Navigations */
+  {
+    id: "dashboard_me",
+    title: "Tableau de bord Médiateur",
+    auth: authRoles.mediateur,
+    type: "item",
+    icon: "dashboard",
+    url: "/dashboard",
+  },
+
+
+
   /** ACHETEUR Navigations */
   {
     id: "dashboard_ac",
@@ -411,6 +423,7 @@ const navigationConfig = [
       },
     ],
   },
+  
 
   {
     id: "black_listes_ha",
@@ -427,6 +440,46 @@ const navigationConfig = [
     type: "item",
     icon: "person",
     url: "/ac/profile",
+  },
+
+  {
+    id: "DG-acheteur",
+    title: "Directeur des achats",
+    auth: authRoles.acheteur,
+    icon: "group",
+    type: "collapse",
+    children: [
+      {
+        id: "teams",
+        title: "Suivi les acheteurs",
+        auth: authRoles.acheteur,
+        exact: true,
+        type: "item",
+        url: "/teams",
+      },
+      {
+        id: "team-acheteur",
+        title: "Création Acheteur / Master ",
+        auth: authRoles.acheteur,
+        exact: true,
+        type: "item",
+        url: "/acheteur/team",
+      },
+    ],
+  },
+  {
+    id: "acheteurs-tentatives",
+    title: "Acheteur(s) essai de s'inscrire",
+    auth: authRoles.acheteur,
+    type: "item",
+    icon: "vpn_key",
+    url: "/childs",
+    badge: {
+      title: "acheteurs-tentatives",
+      bg: "rgb(255, 111, 0)",
+      fg: "#FFFFFF",
+      count: 0,
+    },
   },
   /** FIN ACHETEUR Navigations */
 

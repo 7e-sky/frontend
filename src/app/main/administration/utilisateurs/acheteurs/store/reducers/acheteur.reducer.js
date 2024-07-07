@@ -10,6 +10,7 @@ const initialState = {
     error: null,
     data: null,
 
+
     acheteurReqInProgress: false,
     avatar: null,
     acheteur_deleted: null,
@@ -220,6 +221,8 @@ const acheteurReducer = function (state = initialState, action) {
 
                 };
             }
+           
+         
         case Actions.SET_PARAMETRES_DETAIL:
             {
                 return {

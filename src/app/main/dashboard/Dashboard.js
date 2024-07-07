@@ -4,6 +4,7 @@ import DashboardApp from '../fournisseur/dashboard/DashboardApp';
 import DashboardAppAcheteur from '../acheteur/dashboard/DashboardApp';
 import { Typography } from '@material-ui/core';
 import DashboardAdmin from '../administration/dashboard/DashboardAdmin';
+import DashboardAppMediateur from '../mediateur/dashboard/DashboardApp';
 
 function Dashboard(props) {
 
@@ -23,8 +24,14 @@ function Dashboard(props) {
     }
 
     if (user.role === 'ROLE_ADMIN') {
-        return (
+        return (    
             <DashboardAdmin />
+        )
+    }
+
+    if (user.role === 'ROLE_Mediateur') {
+        return (    
+            <DashboardAppMediateur />
         )
     }
 

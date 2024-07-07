@@ -4,8 +4,15 @@ import agent from "agent";
 export const REQUEST_ACHETEURS = '[ACHETEURS ADMIN APP] REQUEST ACHETEURS';
 export const SET_PARAMETRES_DATA = '[ACHETEURS ADMIN APP] SET PARAMETRES DATA';
 export const GET_ACHETEURS = '[ACHETEURS ADMIN APP] GET ACHETEURS';
+export const OPEN_NEW_ACHETEURS_DIALOG = '[ACHETEURS ADMIN APP] OPEN NEW ACHETEURS DIALOG';
 export const SET_ACHETEURS_SEARCH_TEXT = '[ACHETEURS ADMIN APP] SET ACHETEURS SEARCH TEXT';
 
+
+export function openNewAcheteursDialog() {
+    return {
+        type: OPEN_NEW_ACHETEURS_DIALOG
+    }
+}
 export function getAcheteurs(parametres) {
     var search = '';
     if (parametres.search.length > 0) {

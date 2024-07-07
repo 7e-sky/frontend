@@ -23,7 +23,7 @@ function BlackListesApp(props) {
             dispatch(Actions.getBlackListes(user.id));
     }, [dispatch, user]);
 
-    return (
+   /*  return (
         <div className="flex flex-col flex-auto flex-shrink-0 items-center justify-center p-32">
 
             <div className="flex flex-col items-center justify-center w-full">
@@ -45,7 +45,7 @@ function BlackListesApp(props) {
                 </Grow>
             </div>
         </div>
-    )
+    )  */
     return (
         <React.Fragment>
             <Helmet>

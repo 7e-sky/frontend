@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, Input, Paper, Typography } from '@material-ui/core';
+import { Icon, Input, Paper, Typography, Button  } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { FuseAnimate } from '@fuse';
 import { useDispatch, useSelector } from 'react-redux';
@@ -47,14 +47,14 @@ function CommercialsHeader(props) {
 
 
             </div>
-            {/*
+     
                 <FuseAnimate animation="transition.slideRightIn" delay={300}>
                     <Button onClick={ev => dispatch(Actions.openNewCommercialsDialog())} className="whitespace-no-wrap" variant="contained">
                         <span className="hidden sm:flex">Ajouter nouveau Comm.</span>
                         <span className="flex sm:hidden">New</span>
                     </Button>
                 </FuseAnimate>
-                */}
+               
         </div>
 
 

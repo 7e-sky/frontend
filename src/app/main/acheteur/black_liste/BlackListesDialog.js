@@ -17,6 +17,13 @@ import Highlighter from "react-highlight-words";
 const defaultFormState = {
     raison: '',
     fournisseur: '',
+    fournisseurEx:'',
+    email: '',
+    pays: '',
+    ville: '',
+    ice: '',
+    siret: '',
+    OUT: false // Assurez-vous que OUT est initialisé
 };
 
 const useStyles = makeStyles(theme => ({
@@ -151,18 +158,42 @@ function BlackListesDialog(props) {
         setForm(_.set({ ...form }, name, e.target.checked));
     }
     function handleSubmit(event) {
-        //event.preventDefault();
+        // Supprimer event.preventDefault() pour permettre à la sauvegarde de se produire normalement
+    
+        // Récupérer les valeurs sélectionnées du pays et de la ville
+        const pays = selectedPays;
+        const ville = selectedVille;
+       // Déterminer ICE ou SIRET en fonction du pays sélectionné
+    let iceOrSiret = '';
+    if (pays === 'Maroc') {
+        iceOrSiret = form.ice;
+    } else {
+        iceOrSiret = form.siret;
+    }
+        
 
+    
+        // Créer un nouvel objet form avec les données du formulaire et les valeurs sélectionnées du pays et de la ville
+        const updatedForm = {
+            ...form,
+            pays: pays,
+            ville: ville,
+            ice: iceOrSiret // Utiliser ICE ou SIRET en fonction du pays sélectionné
+            
+        };
+    
+        // Envoyer l'objet updatedForm à l'action addBlackListe
         if (BlackListesDialog.type === 'new') {
-            dispatch(Actions.addBlackListe(form, user.id));
-            //setFournisseur({ societe: '' });
+            dispatch(Actions.addBlackListe(updatedForm, user.id));
         }
         else {
-            dispatch(Actions.updateBlackListe(form, user.id));
-            //setFournisseur({ societe: '' });
+            dispatch(Actions.updateBlackListe(updatedForm, user.id));
         }
-        //closeComposeDialog();
+    
+        // Fermer le dialogue après l'ajout ou la mise à jour
+        closeComposeDialog();
     }
+    
 
     function handleRemove() {
 
@@ -215,6 +246,88 @@ function BlackListesDialog(props) {
         setForm(_.set({ ...form }, 'fournisseur', null))
     }
 
+
+    // États pour stocker les valeurs sélectionnées du pays et de la ville
+    const [selectedPays, setSelectedPays] = useState('');
+    const [selectedProblem, setSelectedProblem] = useState('');
+    const [selectedVille, setSelectedVille] = useState('');
+    const [inputLabel, setInputLabel] = useState('');
+
+
+    // Gérer le changement de sélection du pays
+    const handlePaysChange = (event) => {
+        setSelectedPays(event.target.value);
+        // Réinitialiser la sélection de la ville lorsque le pays est changé
+        setSelectedVille('');
+        // Déterminer le label de la zone de texte en fonction du pays sélectionné
+        if (event.target.value !== 'Maroc') {
+            setInputLabel('SIRET');
+        } else {
+            setInputLabel('ICE');
+        }
+        // Réinitialiser les valeurs de ICE et SIRET lorsque le pays est changé
+         setForm({ ...form, ice: '', siret: '' });
+    };
+
+    // État pour stocker le type de numéro en fonction du pays sélectionné
+const [numeroType, setNumeroType] = useState('');
+
+// Fonction pour déterminer le type de numéro (ICE ou SIRET) en fonction du pays sélectionné
+const determineNumeroType = (pays) => {
+    if (pays === 'Maroc') {
+        setNumeroType('ICE');
+    } else {
+        setNumeroType('SIRET');
+    }
+};
+
+// Effet pour mettre à jour le type de numéro lorsque le pays est sélectionné
+useEffect(() => {
+    determineNumeroType(selectedPays);
+}, [selectedPays]);
+    // Tableaux de données factices pour les options de sélection des pays et des villes
+    const paysOptions = ['France', 'Allemagne', 'Espagne','Maroc'];
+    const villesParPays = {
+        'France': ['Paris', 'Marseille', 'Lyon'],
+        'Allemagne': ['Berlin', 'Hambourg', 'Munich'],
+        'Espagne': ['Madrid', 'Barcelone', 'Valence'],
+        'Maroc': ['Casablanca', 'Rabat', 'Fes']
+    };
+    const problemOptions = [
+        "Problème de communication",
+        "Retard de livraison",
+        "Non-conformité",
+        "Litiges sur les paiements",
+        "Augmentation des coûts"
+    ];
+
+    const handleProblemChange = (event) => {
+        setSelectedProblem(event.target.value);
+    };
+    // Gérer le changement de sélection du pays
+   /*  const handlePaysChange = (event) => {
+        setSelectedPays(event.target.value);
+        // Réinitialiser la sélection de la ville lorsque le pays est changé
+        setSelectedVille('');
+    }; */
+
+    // Gérer le changement de sélection de la ville
+    const handleVilleChange = (event) => {
+        setSelectedVille(event.target.value);
+         // Réinitialiser les valeurs de ICE et SIRET lorsque la ville est changée
+    setForm({ ...form, ice: '', siret: '' });
+    };
+    function handleCheckBoxChange(e) {
+        // Mettre à jour l'état de la case à cocher et exécuter d'autres logiques si nécessaire
+        setForm(_.set({ ...form }, 'OUT', e.target.checked));
+        // Exemple: masquer la zone de recherche du fournisseur si la case est cochée
+        if (e.target.checked) {
+            hideSearch();
+        } else {
+            showSearch();
+        }
+    }
+
     return (
         <Dialog
             classes={{
@@ -229,7 +342,7 @@ function BlackListesDialog(props) {
             <AppBar position="static" elevation={1}>
                 <Toolbar className="flex w-full">
                     <Typography variant="subtitle1" color="inherit">
-                        {BlackListesDialog.type === 'new' ? 'Nouveau BlackListe' : 'Editer BlackListe'}
+                        {BlackListesDialog.type === 'new' ? 'Nouveau Fournisseur à BlackListé' : 'Editer BlackListe'}
                     </Typography>
                 </Toolbar>
 
@@ -241,12 +354,25 @@ function BlackListesDialog(props) {
                 ref={formRef}
                 className="flex flex-col overflow-visible">
                 <DialogContent classes={{ root: "p-24 overflow-visible" }}>
+                {!form.OUT && (
                     <div className="flex">
+                <h5>Pour ajouter à cette liste un fournisseur hors liste, veuillez saisir <span style={{ color: 'red' }}>Fournisseur externe</span> dans la barre de recherche.</h5>
+              
+               </div>
+               
+                )}
+                 <br></br>
+                {!form.OUT &&  (     
+                            
+                <div className="flex">
+                    
                         <div className="min-w-48 pt-20">
                             <Icon color="action">work</Icon>
                         </div>
+                       
                         <div className="w-full" ref={popperNode}>
                             <Autosuggest
+                            
                                 {...autosuggestProps}
                                 getSuggestionValue={suggestion => suggestion.societe}
                                 onSuggestionSelected={(event, { suggestion, method }) => {
@@ -261,7 +387,7 @@ function BlackListesDialog(props) {
                                 inputProps={{
                                     classes,
                                     label: 'Fournisseur',
-                                    placeholder: "Cherchez avec le nom de la société",
+                                    placeholder: "Cherchez le Fournisseur à blacklisté",
                                     value: searchFournisseur.searchText,
                                     variant: "outlined",
                                     name: "fournisseur",
@@ -311,8 +437,10 @@ function BlackListesDialog(props) {
 
                         </div>
 
-
+                       
                     </div>
+                     )}
+                     
                     {
                         fournisseur &&
 
@@ -323,33 +451,162 @@ function BlackListesDialog(props) {
                         />
 
                     }
-
-
-                    <div className="flex">
-                        <div className="min-w-48 pt-20">
-                            <Icon color="action">chat</Icon>
-                        </div>
-
-                        <TextFieldFormsy
-                            className="mb-24 mt-24"
-                            label="Raison"
-                            id="raison"
-                            name="raison"
-                            value={form.raison}
-                            onChange={handleChange}
-                            variant="outlined"
-                            validations={{
-                                minLength: 6
-                            }}
-                            validationErrors={{
-                                minLength: 'La longueur minimale des caractères est de 6'
-                            }}
-                            required
-                            multiline
-                            rows="4"
-                            fullWidth
-                        />
+                        <div className="flex">
+                                <div className="min-w-48 ">
+                                </div>
+                                <CheckboxFormsy
+                className="mb-24"
+                name="OUT"  
+                checked={form.OUT}
+                label={form.OUT ? "Fournisseur listé" : "Fournisseur Hors liste"}
+                onChange={handleCheckBoxChange}
+                fullWidth
+            />
                     </div>
+
+                    
+                    {!form.OUT && (
+                        
+                    <div className="flex">
+
+                       {/* Sélection du problème */}
+              <select value={selectedProblem} onChange={handleProblemChange}>
+                <option value="">Sélectionnez un Raison</option>
+                {problemOptions.map((problem, index) => (
+                    <option key={index} value={problem}>{problem}</option>
+                ))}
+            </select> 
+            
+            </div>
+                    )}
+              {!form.OUT && (
+            <div className="flex">
+                    <div className="min-w-48 pt-20">
+                        <Icon color="action">chat</Icon>
+                    </div>
+                        
+                    <TextFieldFormsy
+                        className="mb-24 mt-24"
+                        label="Autres"
+                        id="raison"
+                        name="raison"
+                        value={form.raison}
+                        onChange={handleChange}
+                        variant="outlined"
+                        validations={{
+                            minLength: 6
+                        }}
+                        validationErrors={{
+                            minLength: 'La longueur minimale des caractères est de 6'
+                        }}
+                        required
+                        multiline
+                        rows="4"
+                        fullWidth
+                    />
+                    
+                    
+                </div>
+                
+                      )}
+                   
+
+                    
+
+
+                    {form.OUT && (
+        <>
+            <div  className="flex" style={{ marginTop: '-15px' }}>
+
+             
+
+            {/* Sélection du pays */}
+            <select value={selectedPays} onChange={handlePaysChange}>
+                <option value="">Sélectionnez un pays</option>
+                {paysOptions.map((pays, index) => (
+                    <option key={index} value={pays}>{pays}</option>
+                ))}
+            </select>
+
+            {/* Sélection de la ville */}
+            {selectedPays && (
+                <select value={selectedVille} onChange={handleVilleChange}>
+                    <option value="">Sélectionnez une ville</option>
+                    {villesParPays[selectedPays].map((ville, index) => (
+                        <option key={index} value={ville}>{ville}</option>
+                    ))}
+                </select>
+            )}
+
+            {/* Afficher la sélection actuelle */}
+            {selectedPays && selectedVille && (
+                <div>
+                    <p>Pays sélectionné : {selectedPays}</p>
+                    <p>Ville sélectionnée : {selectedVille}</p>
+                </div>
+            )}
+        </div>
+        <div className="flex" style={{ marginTop: '-15px' }}>
+                {/* Afficher la zone de texte correspondante au pays sélectionné */}
+                <TextFieldFormsy
+    className="mb-24 mt-24"
+    label={numeroType}
+    id={numeroType.toLowerCase()} // Utilisez le type de numéro comme ID
+    name={numeroType.toLowerCase()} // Utilisez le type de numéro comme nom
+    value={form[numeroType.toLowerCase()]} // Accédez à la valeur du type de numéro dans le formulaire
+    onChange={handleChange}
+    variant="outlined"
+    fullWidth
+/>
+            </div>
+            <div className="flex" style={{ marginTop: '-15px' }}>
+                {/* Première zone de texte */}
+                <TextFieldFormsy
+                    className="mb-24 mt-24"
+                    label="Fournisseur *"
+                    id="fournisseurEx"
+                    name="fournisseurEx"
+                    value={form.fournisseurEx}
+                    onChange={handleChange}
+                    variant="outlined"
+                    fullWidth
+                />
+         
+            </div>
+            <div className="flex" style={{ marginTop: '-15px' }}>
+                {/* Première zone de texte */}
+                <TextFieldFormsy
+                    className="mb-24 mt-24"
+                    label="Email *"
+                    id="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    variant="outlined"
+                    fullWidth
+                />
+         
+            </div>
+            <TextFieldFormsy
+                    className="mb-24 mt-24"
+                    label="raison *"
+                    id="raison"
+                    name="raison"
+                    value={form.raison}
+                    onChange={handleChange}
+                    variant="outlined"
+                    fullWidth
+                />
+          
+
+         
+         
+        
+            
+        </>
+    )}
+
+                    
                     {
                         BlackListesDialog.type === 'edit' ?
                             <div className="flex">
@@ -366,7 +623,10 @@ function BlackListesDialog(props) {
                             </div>
                             : ''
                     }
-
+            
+                      
+                         
+                      
 
                 </DialogContent>
 

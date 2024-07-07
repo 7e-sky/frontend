@@ -25,6 +25,7 @@ import Formsy from "formsy-react";
 import _ from "@lodash";
 import SelectReactFormsy from "@fuse/components/formsy/SelectReactFormsy";
 
+
 const defaultFormState = {
   firstName: "",
   lastName: "",
